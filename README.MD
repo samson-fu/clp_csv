@@ -1,7 +1,7 @@
 https://docs.influxdata.com/influxdb/cloud/api-guide/client-libraries/python/
 
 
-install lib:
+install lib first:
 
-pip install influxdb-client
+pip install 
 
