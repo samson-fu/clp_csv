@@ -1,0 +1,4 @@
+beautifulsoup4==4.12.2
+influxdb-client==1.36.1
+pandas==2.0.1
+requests==2.31.0
