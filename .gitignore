@@ -1,0 +1,8 @@
+# Ignore all CSV files starting with "consumption_history_"
+__pycache__
+loadTest
+consumption_history_*.csv
+grafana
+temp.*
+.env
+test_*.py
