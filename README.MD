@@ -1,5 +1,8 @@
 ## First of first
+Install required libraries:
+```
 pip install -r requirements.txt
+```
 
 ## Prepare 
 Login to CLP and make sure to be able to login with user name and password method.
