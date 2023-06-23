@@ -1,8 +1,7 @@
 import os
 from influxdb_client import InfluxDBClient
-import datetime
 
-def lasttimeof_entity_id(entity_id="clp_energy_usage_hourly", default: datetime.datetime = datetime.datetime(2000, 1, 1)):
+def lasttimeof_entity_id(entity_id):
     result = None
     # Connection settings
     # Set the active organization and bucket
@@ -13,6 +12,10 @@ def lasttimeof_entity_id(entity_id="clp_energy_usage_hourly", default: datetime.
     url = os.environ.get('INFLUXDB_URL')
 
     # Create InfluxDB client instance
+    print("InfluxDB.bucket:", bucket)
+    print("InfluxDB.org:", org)
+    print("InfluxDB.token:", token)
+    print("InfluxDB.url:", url)
     client = InfluxDBClient(url=url, token=token, org=org)
     try:
         # Create a Flux query, and then format it as a Python string.
@@ -42,8 +45,6 @@ def lasttimeof_entity_id(entity_id="clp_energy_usage_hourly", default: datetime.
     finally:
         # Close the client connection
         client.__del__()
-        if result==None:
-            result = default
         return result
 
 def main():

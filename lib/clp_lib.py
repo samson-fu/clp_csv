@@ -8,7 +8,7 @@ import requests
 import datetime
 from bs4 import BeautifulSoup
 
-def download_clp(username, password, fn = f"consumption_history_{datetime.datetime.now().strftime('%Y%m%d-%H%M%S')}.csv"):
+def download_clp(username, password, fn = f"./history/consumption_history_{datetime.datetime.now().strftime('%Y%m%d-%H%M%S')}.csv"):
     # Login information
     # username = os.environ.get('CLP_USER')
     # password = os.environ.get('CLP_PASS')
@@ -86,6 +86,7 @@ def download_clp(username, password, fn = f"consumption_history_{datetime.dateti
                     print("API request failed:", api_response.status_code)
             else:
                 print("Login Failed !!!")
+            return ""
         except Exception as e:
             print("error found:", e)
             return ""
@@ -180,7 +181,7 @@ def read_clp_csv(csv_file):
         print("Unable to read from csv file:", e)
         return []
 
-def clp_df2influx(df, entity_id="clp_energy_usage_hourly"):
+def clp_df2influx(df, entity_id):
     """
     Writes data from a DataFrame to InfluxDB.
 
@@ -220,7 +221,7 @@ def main():
     # fout = "./consumption_history_20230613-153656-fixed.csv"
     # fix_clp_csv(fin, fout)
     # df = read_clp_csv("./consumption_history_20230613-153656.csv")
-    clpuser = os.environ.get("CLP_USER_SK")
+    clpuser = os.environ.get("CLP_USER")
     clppass = os.environ.get("CLP_PASS")
     print(clpuser,clppass)
 
