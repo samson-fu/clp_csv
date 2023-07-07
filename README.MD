@@ -1,11 +1,11 @@
-## First of first
+## First
 Install required libraries:
 ```
 pip install -r requirements.txt
 ```
 
 ## Prepare 
-Login to CLP and make sure to be able to login with user name and password method.
+Make sure can login with user name and password method to CLP.
 `https://services.clp.com.hk/`
 
 ## Test
