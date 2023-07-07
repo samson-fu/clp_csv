@@ -30,7 +30,7 @@ https://docs.influxdata.com/influxdb/cloud/api-guide/client-libraries/python/
 ## Examples:
 1. Download clp csv file only
 ```
-python3 /volume1/NAS1DISK1/scripts/clp/clp2influxdb.py -login 81234567890 -pwd abCD1234
+python3 clp2influxdb.py -login 81234567890 -pwd abCD1234
 ```
 
 2. Download import CLP data to influxDB 
