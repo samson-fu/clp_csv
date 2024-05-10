@@ -2,6 +2,6 @@
 
 beautifulsoup4==4.12.2
 influxdb-client==1.36.1
-pandas==2.0.1
+pandas==2.1.0
 requests==2.31.0
 python-dotenv==1.0.0

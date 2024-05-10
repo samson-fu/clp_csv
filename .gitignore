@@ -7,3 +7,4 @@ grafana
 temp.*
 .env
 test_*.py
+*.tar
