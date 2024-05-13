@@ -7,6 +7,7 @@ import json
 import requests
 import datetime
 from bs4 import BeautifulSoup
+from dotenv import load_dotenv
 
 def download_clp(username, password, fn = f"./history/consumption_history_{datetime.datetime.now().strftime('%Y%m%d-%H%M%S')}.csv"):
     # Login information
@@ -217,6 +218,7 @@ def clp_df2influx(df, entity_id):
         client.__del__()
 
 def main():
+    load_dotenv()
     # fin = "./consumption_history_20230613-153656.csv"
     # fout = "./consumption_history_20230613-153656-fixed.csv"
     # fix_clp_csv(fin, fout)

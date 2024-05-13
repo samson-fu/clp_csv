@@ -1,4 +1,6 @@
 ## First
+For Python 3.11 !
+
 Install required libraries:
 ```
 pip install -r requirements.txt

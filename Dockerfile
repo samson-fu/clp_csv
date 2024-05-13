@@ -43,6 +43,7 @@ WORKDIR /app
 
 # Switch to the non-privileged user to run the application.
 # USER appuser
+RUN mkdir history
 
 # Copy the source code into the container.
 COPY . .
