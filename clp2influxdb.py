@@ -71,8 +71,9 @@ def main(args):
         
         clp_df2influx(df, idb["entity_id"])
 
-        print("Import completed, deleting generated csv files...")
+        print("Import completed.")
         if args.idb_purgeFile:
+            print("Deleting generated csv files...")
             os.remove(raw_csv_filename)
             os.remove(fixed_csv_filename)
 
