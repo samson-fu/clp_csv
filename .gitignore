@@ -9,3 +9,4 @@ temp.*
 test_*.py
 *.tar
 crontab
+.venv
