@@ -4,10 +4,11 @@
 # If you need more help, visit the Dockerfile reference guide at
 # https://docs.docker.com/engine/reference/builder/
 
-ARG PYTHON_VERSION=3.11.5
+ARG PYTHON_VERSION=3.12
 # FROM python:${PYTHON_VERSION}-slim as base
-FROM python:${PYTHON_VERSION}-alpine3.18 as base
-# FROM python:3.11.5-alpine3.18
+# 1. FROM python:3.11.5-alpine3.18
+# 2. FROM python:3.12-alpine
+FROM python:${PYTHON_VERSION}-alpine as base
 
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1

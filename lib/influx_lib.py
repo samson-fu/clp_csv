@@ -1,7 +1,7 @@
 import os
 from influxdb_client import InfluxDBClient
 
-def lasttimeof_entity_id(entity_id):
+def lasttimeof_entity_id(entity_id="clp_energy_usage_hourly", queryRange="start: -1y"):
     result = None
     # Connection settings
     # Set the active organization and bucket
@@ -21,7 +21,7 @@ def lasttimeof_entity_id(entity_id):
         # Create a Flux query, and then format it as a Python string.
         query = f'''
         from(bucket:"{bucket}")
-        |> range(start: -1y)
+        |> range({queryRange})
         |> filter(fn: (r) => r["entity_id"] == "{entity_id}")
         |> last()
         |> yield(name: "last")
@@ -48,7 +48,7 @@ def lasttimeof_entity_id(entity_id):
         return result
 
 def main():
-    lastRecordTime = lasttimeof_entity_id()
+    lastRecordTime = lasttimeof_entity_id(queryRange="start: '202'")
 
     print(type(lastRecordTime), lastRecordTime)
 

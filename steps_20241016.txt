@@ -1,0 +1,19 @@
+1.
+https://clpapigee.eipprod.clp.com.hk/ts1/ms/profile/accountManagement/loginByPassword
+HEADER:
+Accept: application/json
+Accept-Encoding: gzip, deflate, br, zstd
+Accept-Language: en
+Authorization: 
+Connection: keep-alive
+Content-Type: application/json
+Device-Type: web
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36
+
+2.
+https://clpapigee.eipprod.clp.com.hk/ts1/ms/consumption/download?ca=82841722098&expireDate=20241016235959&startDate=20240718000000&outputFormat=csv&mode=Hourly
+Accept: application/json
+Connection: keep-alive
+Authorization: <from 1. path: data.access_token>
+Device-Type: web
+User-Agent: Thunder Client (https://www.thunderclient.com)

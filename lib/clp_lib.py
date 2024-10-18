@@ -5,11 +5,43 @@ import pandas as pd
 from influxdb_client.client.write_api import SYNCHRONOUS
 import json
 import requests
-import datetime
+# import datetime
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
+from datetime import datetime, timedelta
 
-def download_clp(username, password, fn = f"./history/consumption_history_{datetime.datetime.now().strftime('%Y%m%d-%H%M%S')}.csv"):
+def get_dates():
+    # Get today's date
+    today = datetime.now()
+    
+    # Format today's date as YYYYMMDD
+    today_str = today.strftime('%Y%m%d235959')
+    
+    # Calculate the date 90 days before today
+    date_90_days_ago = today - timedelta(days=90)
+    
+    # Format the date 90 days ago as YYYYMMDD
+    date_90_days_ago_str = date_90_days_ago.strftime('%Y%m%d000000')
+    
+    return date_90_days_ago_str, today_str
+
+def ensure_folder_exists(filename):
+    """
+    Checks if the folder for the given filename exists, 
+    and creates the folder if it doesn't.
+    
+    Parameters:
+        filename (str): The path to the file whose folder needs to be checked/created.
+    """
+    # Extract the folder path from the filename
+    folder_path = os.path.dirname(filename)
+    if (folder_path!=""):
+        # Check if the folder exists, and create it if it doesn't
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+            print(f"Created folder: {folder_path}")
+
+def download_clp(username, password, fn = f"./history/consumption_history_{datetime.now().strftime('%Y%m%d-%H%M%S')}.csv"):
     # Login information
     # username = os.environ.get('CLP_USER')
     # password = os.environ.get('CLP_PASS')
@@ -18,18 +50,22 @@ def download_clp(username, password, fn = f"./history/consumption_history_{datet
         "https://services.clp.com.hk/en/dashboard/index.aspx"
         # ,"https://services.clp.com.hk/en/login/index.aspx"
     ]
-    url_login = "https://services.clp.com.hk/Service/ServiceLogin.ashx"
-    login_data = f"username={username}&password={password}&rememberMe=true&loginPurpose=&magentoToken=&domeoId=&domeoPointsBalance=&domeoPointsNeeded="
-    api_url = f"https://services.clp.com.hk/Service/ServiceConsumptionDownload.ashx?caNo={username}&mode=H&outputFormat=csv"
+    url_login = "https://clpapigee.eipprod.clp.com.hk/ts1/ms/profile/accountManagement/loginByPassword"
+    login_data = f'{{"username":"{username}","password":"{password}"}}'
+    # api_url = f"https://services.clp.com.hk/Service/ServiceConsumptionDownload.ashx?caNo={username}&mode=H&outputFormat=csv"
+    startDate , expireDate = get_dates()
+    # api_url = f"https://clpapigee.eipprod.clp.com.hk/ts1/ms/consumption/download?ca={username}&expireDate={expireDate}&startDate={startDate}&outputFormat=csv&mode=Hourly"
+    api_url = f"https://clpapigee.eipprod.clp.com.hk/ts1/ms/consumption/download?ca={username}&outputFormat=csv&mode=Hourly&expireDate={expireDate}&startDate={startDate}"
 
     default_headers = {
-        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
-        "accept-language": "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+        "Accept": "application/json",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
+        "Device-Type": "web",
+        "Connection": "keep-alive",
         "cache-control": "no-cache",
-        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-        "devicetype": "web",
-        "html-lang": "en",
+        "Content-Type": "application/json",
+        "Accept-Language": "en",
         "pragma": "no-cache",
     }
 
@@ -53,31 +89,35 @@ def download_clp(username, password, fn = f"./history/consumption_history_{datet
             ## init session
             session.headers.update(default_headers)
 
-            ## find XCSRFToken and add to session header
-            for u in url_queue:
-                print("loading : ", u)
-                response = session.get(u, allow_redirects=True)
-                # cookies = response.cookies
-                # print("content: ", response.content)
-                w = response.content.decode("utf8", "ignore")
-                soup = BeautifulSoup(w, 'html.parser')
-                csrf_token_obj = soup.find("meta", {'name': 'csrf-token'})
-                if csrf_token_obj!=None:
-                    auth_token = csrf_token_obj.get('content')
-                    if len(auth_token)>0:
-                        session.headers["X-CSRFToken"] = auth_token
+            # ## find XCSRFToken and add to session header
+            # for u in url_queue:
+            #     print("loading : ", u)
+            #     response = session.get(u, allow_redirects=True)
+            #     data = response.json()
+            #     # Extract the access_token
+            #     auth_token = data.get('access_token')
+            #     session.headers["Authorization"] = auth_token
 
             # login to clp
+            print("Login to clp...")
             response = session.post(url_login, data=login_data)
-            login_result = json.loads(response.content)
-            if (login_result['status']=="Y"):
+            data = response.json()
+            # login_result = json.loads(response.content)
+            # if (login_result['status']=="Y"):
+            if (data.get('code') == 200):
                 print("Login Success, downloading csv.")
+                # Extract the access_token
+                auth_token = data['data']['access_token']
+                session.headers["Authorization"] = auth_token
+                print(f"access_token = {auth_token}")
+                print(f"Downloading file from: {api_url}")
                 api_response = session.get(api_url)
 
                 # download CSV if login success.
                 # d = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
                 # fn = f"consumption_history_{d}.csv"
                 if api_response.status_code == 200:
+                    ensure_folder_exists(fn)
                     with open(fn, "wb") as file:
                         file.write(api_response.content)
                         file.close()
@@ -85,8 +125,13 @@ def download_clp(username, password, fn = f"./history/consumption_history_{datet
                         return fn
                 else:
                     print("API request failed:", api_response.status_code)
+                    print("data")
+                    print(data)
+                    print("api_response.content")
+                    print(api_response.content)
             else:
                 print("Login Failed !!!")
+                print(data)
             return ""
         except Exception as e:
             print("error found:", e)
