@@ -48,7 +48,8 @@ def lasttimeof_entity_id(entity_id="clp_energy_usage_hourly", queryRange="start:
         return result
 
 def main():
-    lastRecordTime = lasttimeof_entity_id(queryRange="start: '202'")
+    lastRecordTime = lasttimeof_entity_id(queryRange="start: -1m")
+    # lastRecordTime = lasttimeof_entity_id(queryRange="start: '202'")
 
     print(type(lastRecordTime), lastRecordTime)
 

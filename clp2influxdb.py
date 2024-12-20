@@ -15,6 +15,8 @@ def main(args):
     print("password:", password)
 
     raw_csv_filename = download_clp(username, password)
+    # raw_csv_filename = "temp.test1.csv"
+
     if raw_csv_filename=="":
         print("csv download from CLP failed, program terminate.")
         return (-1)
