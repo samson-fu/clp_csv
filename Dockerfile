@@ -8,7 +8,7 @@ ARG PYTHON_VERSION=3.12
 # FROM python:${PYTHON_VERSION}-slim as base
 # 1. FROM python:3.11.5-alpine3.18
 # 2. FROM python:3.12-alpine
-FROM python:${PYTHON_VERSION}-alpine as base
+FROM python:${PYTHON_VERSION}-alpine AS base
 
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1
