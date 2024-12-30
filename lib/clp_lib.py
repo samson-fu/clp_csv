@@ -10,20 +10,20 @@ from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 
-def get_dates():
+def get_dates(days_before_today=90):                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
     # Get today's date
-    today = datetime.now()
+    today = datetime.now().astimezone()
     
     # Format today's date as YYYYMMDD
     today_str = today.strftime('%Y%m%d235959')
     
-    # Calculate the date 90 days before today
-    date_90_days_ago = today - timedelta(days=90)
+    # Calculate the date a specified number of days before today
+    date_before_today = today - timedelta(days=days_before_today)
     
-    # Format the date 90 days ago as YYYYMMDD
-    date_90_days_ago_str = date_90_days_ago.strftime('%Y%m%d000000')
+    # Format the date a specified number of days ago as YYYYMMDD
+    date_before_today_str = date_before_today.strftime('%Y%m%d000000')
     
-    return date_90_days_ago_str, today_str
+    return date_before_today_str, today_str
 
 def ensure_folder_exists(filename):
     """
@@ -50,12 +50,10 @@ def download_clp(username, password, fn = f"./history/consumption_history_{datet
         "https://services.clp.com.hk/en/dashboard/index.aspx"
         # ,"https://services.clp.com.hk/en/login/index.aspx"
     ]
-    url_login = "https://clpapigee.eipprod.clp.com.hk/ts1/ms/profile/accountManagement/loginByPassword"
+    url_login = "https://api.clp.com.hk/ts1/ms/profile/accountManagement/loginByPassword"
     login_data = f'{{"username":"{username}","password":"{password}"}}'
-    # api_url = f"https://services.clp.com.hk/Service/ServiceConsumptionDownload.ashx?caNo={username}&mode=H&outputFormat=csv"
     startDate , expireDate = get_dates()
-    # api_url = f"https://clpapigee.eipprod.clp.com.hk/ts1/ms/consumption/download?ca={username}&expireDate={expireDate}&startDate={startDate}&outputFormat=csv&mode=Hourly"
-    api_url = f"https://clpapigee.eipprod.clp.com.hk/ts1/ms/consumption/download?ca={username}&outputFormat=csv&mode=Hourly&expireDate={expireDate}&startDate={startDate}"
+    api_url = f"https://api.clp.com.hk/ts1/ms/consumption/download?ca={username}&expireDate={expireDate}&startDate={startDate}&outputFormat=csv&mode=Hourly"
 
     default_headers = {
         "Accept": "application/json",
