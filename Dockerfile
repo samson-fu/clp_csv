@@ -17,8 +17,16 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # the application crashes without emitting any logs due to buffering.
 ENV PYTHONUNBUFFERED=1
 
+# Set the time zone environment variable to Asia/Hong_Kong.
+ENV TZ=Asia/Hong_Kong
+
+# Update the package list and install the latest version of the tzdata package.
+# Install the tzdata package without cache, copy the Hong Kong time zone info to localtime,
+# and set the time zone to Asia/Hong_Kong.
 RUN apk update && \
-    apk add -U tzdata
+    apk add --no-cache tzdata && \
+    cp /usr/share/zoneinfo/Asia/Hong_Kong /etc/localtime && \
+    echo "Asia/Hong_Kong" > /etc/timezone
 
 WORKDIR /app
 
@@ -61,6 +69,7 @@ RUN python -m pip install -r requirements.txt
 # RUN apt-get install -y crontab
 RUN crontab crontab
 
+# Start the cron daemon in the foreground.
 CMD ["crond", "-f"]
 
 # Now it is time to build the docker image as below cmd:
