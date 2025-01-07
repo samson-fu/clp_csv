@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1
+# syntax = docker/dockerfile:1
 
 # Comments are provided throughout this file to help you get started.
 # If you need more help, visit the Dockerfile reference guide at
@@ -10,17 +10,22 @@ ARG PYTHON_VERSION=3.12
 # Use slim when there is pandas or numpy in the project!
 # 1. FROM python:3.11.5-alpine3.18
 # 2. FROM python:3.12-alpine
-FROM python:${PYTHON_VERSION}-alpine AS base
+FROM python:${PYTHON_VERSION}-slim AS base
 
-# Prevents Python from writing pyc files.
-ENV PYTHONDONTWRITEBYTECODE=1
-
-# Keeps Python from buffering stdout and stderr to avoid situations where
-# the application crashes without emitting any logs due to buffering.
-ENV PYTHONUNBUFFERED=1
-
-# Set the time zone environment variable to Asia/Hong_Kong.
-ENV TZ=Asia/Hong_Kong
+ENV PIP_DEFAULT_TIMEOUT=100 \
+    # Allow statements and log messages to immediately appear
+    PYTHONUNBUFFERED=1 \
+    # disable a pip version check to reduce run-time & log-spam
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    # cache is useless in docker image, so disable to reduce image size
+    PIP_NO_CACHE_DIR=1 \
+    # Prevents Python from writing pyc files.
+    PYTHONDONTWRITEBYTECODE=1 \
+    # Keeps Python from buffering stdout and stderr to avoid situations where
+    # the application crashes without emitting any logs due to buffering.
+    PYTHONUNBUFFERED=1 \
+    # Set the time zone environment variable to Asia/Hong_Kong.
+    TZ=Asia/Hong_Kong
 
 # Update the package list and install the latest version of the tzdata package.
 # Install the tzdata package without cache, copy the Hong Kong time zone info to localtime,
@@ -60,16 +65,18 @@ RUN mkdir history
 COPY . .
 COPY ./crontab /var/spool/cron/crontabs/root
 
+RUN apt-get update \
+    && apt-get upgrade -y
 # RUN apk update
 RUN python -m pip install --upgrade pip
-RUN python -m pip install -r requirements.txt
+RUN pip install -r requirements.txt
 
 # Expose the port that the application listens on.
 # EXPOSE 8000
 
 # Run the application.
 # RUN apt-get install -y crontab
-RUN crontab crontab
+# RUN crontab crontab
 
 # Start the cron daemon in the foreground.
 CMD ["crond", "-f"]
