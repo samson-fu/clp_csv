@@ -1,4 +1,4 @@
-docker build -t hkclp-powermeter .
+docker build -t hkclp-powermeter:latest .
 docker image save hkclp-powermeter -o hkclp-powermeter.tar
 
 if exist \\FuNas1\download\ (

@@ -3,12 +3,14 @@
 # Comments are provided throughout this file to help you get started.
 # If you need more help, visit the Dockerfile reference guide at
 # https://docs.docker.com/engine/reference/builder/
+# https://medium.com/vantageai/how-to-make-your-python-docker-images-secure-fast-small-b3a6870373a0
 
 ARG PYTHON_VERSION=3.12
 # FROM python:${PYTHON_VERSION}-slim as base
+# Use slim when there is pandas or numpy in the project!
 # 1. FROM python:3.11.5-alpine3.18
 # 2. FROM python:3.12-alpine
-FROM python:${PYTHON_VERSION}-alpine AS base
+FROM python:${PYTHON_VERSION}-slim AS base
 
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1
