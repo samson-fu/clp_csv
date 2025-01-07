@@ -10,7 +10,7 @@ ARG PYTHON_VERSION=3.12
 # Use slim when there is pandas or numpy in the project!
 # 1. FROM python:3.11.5-alpine3.18
 # 2. FROM python:3.12-alpine
-FROM python:${PYTHON_VERSION}-slim AS base
+FROM python:${PYTHON_VERSION}-alpine AS base
 
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -25,10 +25,10 @@ ENV TZ=Asia/Hong_Kong
 # Update the package list and install the latest version of the tzdata package.
 # Install the tzdata package without cache, copy the Hong Kong time zone info to localtime,
 # and set the time zone to Asia/Hong_Kong.
-RUN apk update && \
-    apk add --no-cache tzdata && \
-    cp /usr/share/zoneinfo/Asia/Hong_Kong /etc/localtime && \
-    echo "Asia/Hong_Kong" > /etc/timezone
+# RUN apk update && \
+#     apk add --no-cache tzdata && \
+#     cp /usr/share/zoneinfo/Asia/Hong_Kong /etc/localtime && \
+#     echo "Asia/Hong_Kong" > /etc/timezone
 
 WORKDIR /app
 
